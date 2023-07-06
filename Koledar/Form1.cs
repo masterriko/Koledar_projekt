@@ -13,129 +13,55 @@ using System.Windows.Forms;
 
 namespace Koledar
 {
-    public partial class Form1 : Form
+    public partial class Koledar : Form
     {
         private List<Praznik> prazniki = new List<Praznik>();
-        private int DOLZINA = 800;
-        private int VISINA = 650;
-        private int velikost_kvadrata = 65;
-        private int stevilo_stolpcev = 7;
-        private int odmik = 10;
         private Datum datum;
 
-        public Form1()
+        public Koledar()
         {
-            
+
             InitializeComponent();
-            ustvari_okvir();
-            ustvari_tabelo();
-            nastavi_pozicijo();
-            this.Size = new Size(DOLZINA, VISINA);
-        }
-
-        /// <summary>
-        /// Nastavimo pozicijo komponent
-        /// </summary>
-        private void nastavi_pozicijo()
-        {
-            // Pozicija tabele
-            tabela.Location = new Point((DOLZINA - tabela.Width) / 2, (VISINA - tabela.Height)/ 2);
-
-            // Pozicija okvirja
-            okvir.Location = new Point(tabela.Location.X, tabela.Location.Y - velikost_kvadrata);
-
-            // Pozicija comboBox
-            comboBox.Location = new Point(okvir.Location.X, tabela.Location.Y - velikost_kvadrata - comboBox.Height - odmik);
-
-            // Pozicija vnosa
-            vnos.Location = new Point(comboBox.Location.X + comboBox.Width + 2 * odmik, comboBox.Location.Y);
-
-            // Pozicija gumba
-            gumb.Location = new Point(comboBox.Location.X + (stevilo_stolpcev) * (velikost_kvadrata) - gumb.Width, comboBox.Location.Y);
-
-            //Pozicija teksta izberi mesec
-            izberi_mesec.Location = new Point(tabela.Location.X, comboBox.Location.Y - 2 * odmik);
-
-            //Pozicija teksta vpisi leto
-            vpisi_leto.Location = new Point(vnos.Location.X, comboBox.Location.Y - 2 * odmik);
-
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.ControlBox = true;
+            this.MaximizeBox = false;
+            UstvariTabelo();
+            datum = new Datum(1, "januar", 2023);
+            PreberiDatoteko("prazniki.txt");
+            Posodobi();
+            NarisiDneve();
         }
 
         /// <summary>
         /// Ustvarimo tabelo, kamor bomo vpisovali datume
         /// </summary>
-        private void ustvari_tabelo()
+        private void UstvariTabelo()
         {
-            int stevilo_vrstic = 6;
             tabela.Controls.Clear();
-            tabela.RowCount = stevilo_vrstic;
-            tabela.ColumnCount = stevilo_stolpcev;
-            tabela.Width = velikost_kvadrata * stevilo_stolpcev;
-            tabela.Height = velikost_kvadrata * stevilo_vrstic;
-
-            // Set equal column and row sizes
-            for (int i = 0; i < tabela.ColumnCount; i++)
-            {
-                tabela.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, velikost_kvadrata));
-            }
 
             for (int i = 0; i < tabela.RowCount; i++)
             {
-                tabela.RowStyles.Add(new RowStyle(SizeType.Absolute, velikost_kvadrata));
-            }
-
-            // Add controls to the table cells
-            for (int row = 0; row < tabela.RowCount; row++)
-            {
-                for (int col = 0; col < tabela.ColumnCount; col++)
+                for (int j = 0; j < tabela.ColumnCount; j++)
                 {
                     Panel squarePanel = new Panel();
-                    squarePanel.BackColor = Color.Teal;
                     squarePanel.Margin = new Padding(1);
-                    tabela.Controls.Add(squarePanel, col, row);
+                    tabela.Controls.Add(squarePanel, j, i);
                 }
             }
         }
 
         /// <summary>
-        /// Dodamo okvir z dnevi v tednu
+        /// Pobarvamo okno, kjer se nahaja praznik
         /// </summary>
-        private void ustvari_okvir()
+        /// <param name="dan"></param>
+        /// <param name="okno"></param>
+        public void IzrisiPraznik(Datum dan, Panel okno)
         {
-
-            okvir.Width = velikost_kvadrata * stevilo_stolpcev;
-            okvir.Height = velikost_kvadrata;
-            okvir.RowCount = 1;
-            okvir.ColumnCount = stevilo_stolpcev;
-            okvir.ColumnStyles.Clear();
-            okvir.RowStyles.Clear();
-
-            for (int i = 0; i < okvir.ColumnCount; i++)
+            foreach (Praznik p in prazniki)
             {
-                okvir.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, velikost_kvadrata));
-            }
-                
-            for (int i = 0; i < okvir.RowCount; i++)
-            {
-                okvir.RowStyles.Add(new RowStyle(SizeType.Absolute, velikost_kvadrata));
-            }
-
-            // Add controls to the table cells
-            for (int row = 0; row < okvir.RowCount; row++)
-            {
-                for (int col = 0; col < okvir.ColumnCount; col++)
+                if (p.CompareTo(dan) == 0)
                 {
-                    Panel okno = new Panel();
-                    okno.BackColor = Color.BurlyWood;
-                    okno.Margin = new Padding(1);
-
-                    System.Windows.Forms.Label tekst = new System.Windows.Forms.Label();
-                    tekst.Text = Datum.tabela_dni()[col];
-                    tekst.Dock = DockStyle.Fill;
-                    tekst.TextAlign = ContentAlignment.MiddleCenter;
-                    okno.Controls.Add(tekst);
-
-                    okvir.Controls.Add(okno, col, row);
+                    okno.BackColor = ColorTranslator.FromHtml("#FCABE1");
                 }
             }
         }
@@ -143,67 +69,69 @@ namespace Koledar
         /// <summary>
         /// Narišemo dneve na tabelo
         /// </summary>
-        private void narisi_dneve()
+        private void NarisiDneve()
         {
-            //Animacija je brez skokov
-            tabela.SuspendLayout();
 
-            int zacetek = datum.dan_v_tednu();
-            int konec = Datum.dolzine_mesecev(datum.Leto)[datum.Mesec - 1];
+            int zacetek = datum.DanVTednu();
+            int konec = Datum.DolzineMesecev(datum.Leto)[datum.Mesec - 1];
 
             for (int i = 0; i < 42; i++)
             {
                 Panel okno = (Panel)tabela.GetControlFromPosition(i % 7, i / 7);
                 System.Windows.Forms.Label tekst = new System.Windows.Forms.Label();
+                tekst.Dock = DockStyle.Fill;
+                tekst.TextAlign = ContentAlignment.MiddleCenter;
 
                 okno.Controls.Clear();
 
+                // Font 
+                tekst.Font = new Font("Segoe UI", 10, FontStyle.Italic);
+
+                // Barva teksta
+                tekst.ForeColor = i % 7 == 6 ? ColorTranslator.FromHtml("#FF4160") : ColorTranslator.FromHtml("#000000");
+
                 if (i >= zacetek && i < konec + zacetek)
                 {
-                    // Nastavimo barvo za polja, ki so v danem mesecu
-                    okno.BackColor = Color.DarkGreen;
+
+                    // Barva okna
+                    okno.BackColor = ColorTranslator.FromHtml("#FFF2FC");
 
                     tekst.Text = (i - zacetek + 1).ToString();
-                   
+
+                    Datum dan = new Datum(i - zacetek + 1, Datum.PretvoriSteviloVMesec(datum.Mesec), datum.Leto);
+
+                    IzrisiPraznik(dan, okno);
+
 
                 }
-                else 
+                else
                 {
-                    // Nastavimo barvo polja, ki niso v danem mesecu
-                    okno.BackColor = Color.Teal;
+                    int prejsnji = Datum.PrejsnjiMesec(datum.Mesec - 1, datum.Leto);
+                    tekst.Text = i < zacetek ? (prejsnji - zacetek + i + 1).ToString() : (i + 1 - (zacetek + konec)).ToString();
 
-                    int prejsnji = Datum.prejsnji_mesec(datum.Mesec - 1, datum.Leto);
-
-                    if (i < zacetek)
-                    {
-                        tekst.Text = (prejsnji - zacetek + i + 1).ToString();
-                    }
-                    else
-                    {
-                        tekst.Text = (i + 1 - (zacetek + konec)).ToString();
-                    }
-
+                    // Barva polja, ki ni v danem mesecu
+                    okno.BackColor = ColorTranslator.FromHtml("#FFFFFF");
 
                 }
                 okno.Controls.Add(tekst);
             }
-            tabela.ResumeLayout();
         }
 
         /// <summary>
         /// Preberemo datoteko s prazniki in napolnimo List prazniki
         /// </summary>
         /// <param name="datoteka"></param>
-        private void preberi_datoteko(string datoteka)
+        private void PreberiDatoteko(string datoteka)
         {
             try
             {
                 string[] vrstice = File.ReadAllLines(datoteka);
 
-                foreach (string vrstica in vrstice)
+                foreach (string vrstica in vrstice.Skip(3).ToArray())
                 {
                     string[] komponente = vrstica.Split(',');
-                    Praznik praznik = new Praznik(int.Parse(komponente[0]), komponente[1], komponente.Length > 2 ? int.Parse(komponente[2]) : 1, komponente.Length > 2 ? true : false);
+                    Praznik praznik = new Praznik(int.Parse(komponente[0]), komponente[1], komponente.Length > 2 ? int.Parse(komponente[2]) : 1, komponente.Length < 3);
+
                     prazniki.Add(praznik);
                 }
             }
@@ -218,19 +146,70 @@ namespace Koledar
         }
 
         /// <summary>
+        /// Posodobimo koledar
+        /// </summary>
+        public void Posodobi()
+        {
+            // preberi_datoteko("prazniki.txt");
+            LetoNaslov.Text = (datum.Leto).ToString();
+            MesecNaslov.Text = (Datum.PretvoriSteviloVMesec(datum.Mesec)).ToString();
+            NarisiDneve();
+            this.Invalidate();
+        }
+
+        /// <summary>
+        /// Posodobimo naslov, če uporabnik vnese v polja
+        /// </summary>
+        public void PosodobiNaslov()
+        {
+            LetoNaslov.Text = LetoVnos.Text;
+            MesecNaslov.Text = MesecComboBox.Text;
+        }
+
+
+        /// <summary>
+        /// Ko kliknemo na gumb se prestavimo za en mesec naprej
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GumbNaslednjiKlik(object sender, EventArgs e)
+        {
+            tekstIkona.Text = "";
+            datum.OdstejMesec(false);
+            Posodobi();
+        }
+
+        /// <summary>
+        /// Ko kliknemo na gumb se prestavimo za en mesec nazaj
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GumbPrejsnjiKlik(object sender, EventArgs e)
+        {
+            tekstIkona.Text = "";
+            datum.OdstejMesec(true);
+            Posodobi();
+        }
+
+        /// <summary>
         /// Ko kliknemo gumb posodobimo koledar
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void gumb_klik(object sender, EventArgs e)
+        private void GumbPotrdiKlik(object sender, EventArgs e)
         {
-
-            datum = new Datum(1, comboBox.Text, int.Parse(vnos.Text));
-            preberi_datoteko("prazniki.txt");
-            this.narisi_dneve();
-            this.Invalidate();
+            try
+            {
+                datum = new Datum(1, MesecComboBox.Text, int.Parse(LetoVnos.Text));
+                tekstIkona.ForeColor = Color.Green;
+                tekstIkona.Text = "✔";
+                Posodobi();
+            }
+            catch 
+            {
+                tekstIkona.ForeColor = Color.Red;
+                tekstIkona.Text = "✘";
+            }
         }
-
-        
     }
 }
