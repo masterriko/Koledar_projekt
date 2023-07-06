@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Koledar
 {
-    public class Datum
+    public class Datum : IEquatable<Datum>
     {
         private int dan;
         private int mesec;
@@ -160,9 +160,9 @@ namespace Koledar
         /// Funkcija za dan datum vrne kateri dan v tednu je (Zellerjev obrazec)
         /// </summary>
         /// <returns>število od 0 - 6, ki predstavlja dan v tednu. Začnemo s ponedeljkom</returns>
-        public int DanVTednu()
+        public int PrviDanVMesecu()
         {
-            int dan = Dan;
+            int dan = 1;
             int mesec = Mesec;
             int leto = Leto; 
 
@@ -196,6 +196,16 @@ namespace Koledar
             }
             
             return Datum.DolzineMesecev(leto)[mesec - 1];
+        }
+
+        /// <summary>
+        /// Ali sta dva datuma enaka. Dnevov ne preverja samo leto in mesec.
+        /// </summary>
+        /// <param name="datum"></param>
+        /// <returns></returns>
+        public bool Equals(Datum datum)
+        {
+            return (this.Mesec == datum.Mesec && this.Leto == datum.Leto);
         }
 
         /// <summary>

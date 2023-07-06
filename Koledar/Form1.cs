@@ -17,10 +17,11 @@ namespace Koledar
     {
         private List<Praznik> prazniki = new List<Praznik>();
         private Datum datum;
+        private Datum iskaniDatum;
 
         public Koledar()
         {
-
+           
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.ControlBox = true;
@@ -50,6 +51,7 @@ namespace Koledar
             }
         }
 
+
         /// <summary>
         /// Pobarvamo okno, kjer se nahaja praznik
         /// </summary>
@@ -71,8 +73,9 @@ namespace Koledar
         /// </summary>
         private void NarisiDneve()
         {
+            Console.WriteLine(datum.ToString());
 
-            int zacetek = datum.DanVTednu();
+            int zacetek = datum.PrviDanVMesecu();
             int konec = Datum.DolzineMesecev(datum.Leto)[datum.Mesec - 1];
 
             for (int i = 0; i < 42; i++)
@@ -92,15 +95,21 @@ namespace Koledar
 
                 if (i >= zacetek && i < konec + zacetek)
                 {
-
+           
                     // Barva okna
                     okno.BackColor = ColorTranslator.FromHtml("#FFF2FC");
+
 
                     tekst.Text = (i - zacetek + 1).ToString();
 
                     Datum dan = new Datum(i - zacetek + 1, Datum.PretvoriSteviloVMesec(datum.Mesec), datum.Leto);
 
                     IzrisiPraznik(dan, okno);
+
+                    if (iskaniDatum != null && iskaniDatum.Dan == i - zacetek + 1 && iskaniDatum.Equals(datum))
+                    {
+                        okno.BackColor = Color.RoyalBlue;
+                    }
 
 
                 }
@@ -210,6 +219,30 @@ namespace Koledar
                 tekstIkona.ForeColor = Color.Red;
                 tekstIkona.Text = "✘";
             }
+        }
+
+        /// <summary>
+        /// Ko vpišemo poljuben datum, program skoči na izbrano mesto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GumbPotrdiKlik2(object sender, EventArgs e)
+        {
+            string[] dan = datumVnos2.Text.Split('.');
+            try
+            {
+                datum = new Datum(int.Parse(dan[0]), Datum.PretvoriSteviloVMesec(int.Parse(dan[1])), int.Parse(dan[2]));
+                iskaniDatum = new Datum(int.Parse(dan[0]), Datum.PretvoriSteviloVMesec(int.Parse(dan[1])), int.Parse(dan[2]));
+                tekstIkona.ForeColor = Color.Green;
+                tekstIkona.Text = "✔";
+                Posodobi();
+            }
+            catch
+            {
+                tekstIkona.ForeColor = Color.Red;
+                tekstIkona.Text = "✘";
+            }
+
         }
     }
 }
