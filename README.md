@@ -9,4 +9,4 @@
 - Prazniki so spet drugače označeni, kot ostali dnevi na koledarju.
 - Dnevi so prikazani v vrsticah, oziroma 7 dni v eni vrstici.
 
-  ![Slika](slike/Koledar_slika1.png)
+  ![Slika](Koledar_slika1.png)
