@@ -1,0 +1,19 @@
+﻿Parametri so ločeni z vejico in si sledijo v zaporedju:
+Dan, Mesec, Ponavljajoč > letnica : prazen niz
+
+1,januar
+2,januar
+8,februar
+27,april
+1,maj
+2,maj
+8,junij
+25,junij
+17,avgust
+15,september
+23,september
+25,oktober
+1,november
+23,november
+26,december
+8,april,2023

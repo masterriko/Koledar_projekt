@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -108,7 +109,7 @@ namespace Koledar
 
                     if (iskaniDatum != null && iskaniDatum.Dan == i - zacetek + 1 && iskaniDatum.Equals(datum))
                     {
-                        okno.BackColor = Color.RoyalBlue;
+                        okno.BackColor = ColorTranslator.FromHtml("#A5C7FF");
                     }
 
 
@@ -134,25 +135,39 @@ namespace Koledar
         {
             try
             {
-                string[] vrstice = File.ReadAllLines(datoteka);
+                string resourceName = "Koledar.Resources." + datoteka;
 
-                foreach (string vrstica in vrstice.Skip(3).ToArray())
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {
-                    string[] komponente = vrstica.Split(',');
-                    Praznik praznik = new Praznik(int.Parse(komponente[0]), komponente[1], komponente.Length > 2 ? int.Parse(komponente[2]) : 1, komponente.Length < 3);
+                    if (stream != null)
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string fileContent = reader.ReadToEnd();
 
-                    prazniki.Add(praznik);
+                            string[] vrstice = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (string vrstica in vrstice.Skip(3).ToArray())
+                            {
+                                string[] komponente = vrstica.Split(',');
+                                Praznik praznik = new Praznik(int.Parse(komponente[0]), komponente[1], komponente.Length > 2 ? int.Parse(komponente[2]) : 1, komponente.Length < 3);
+
+                                prazniki.Add(praznik);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Embedded resource: {datoteka}, ni bila najdena.");
+                    }
                 }
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine($"Datoteka: {datoteka}, ni bila najdena.");
             }
             catch (IOException)
             {
-                Console.WriteLine("Napaka pri branju datoteke");
+                Console.WriteLine("Napaka pri branju vdelane datoteke");
             }
         }
+
 
         /// <summary>
         /// Posodobimo koledar
