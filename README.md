@@ -9,6 +9,6 @@ Enostaven grafičen koledarček.
 - Prazniki so spet drugače označeni, kot ostali dnevi na koledarju.
 - Dnevi so prikazani v vrsticah, oziroma 7 dni v eni vrstici.
 ---
-Za prikaz programa **Poženi ``.exe`` datoteko**
+Za prikaz programa **Poženi ``Koledar.exe`` datoteko**
 ---
   ![Slika](Koledar_slika1.png)
