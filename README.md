@@ -10,6 +10,6 @@ Enostaven grafičen koledarček.
 - Dnevi so prikazani v vrsticah, oziroma 7 dni v eni vrstici.
 - Prazniki, ki so razvidni v programu so državni prazniki iz: https://www.gov.si/teme/drzavni-prazniki-in-dela-prosti-dnevi/.
 ---
-Za prikaz programa **Poženi ``Koledar.exe`` datoteko**
+Za prikaz programa **poženi ``Koledar.exe`` datoteko**
 ---
   ![Slika](Koledar_slika1.png)
