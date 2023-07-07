@@ -8,6 +8,7 @@ Enostaven grafičen koledarček.
 - Program pri odpiranju prebere vsebino datoteke s seznamom dni in oznako ali je praznik ponavljajoč (navadna ASCII datoteka, ki vsebuje datume in oznako za ponavljanje, ločeni z poljubnim znakom), ki predstavljajo praznike.
 - Prazniki so spet drugače označeni, kot ostali dnevi na koledarju.
 - Dnevi so prikazani v vrsticah, oziroma 7 dni v eni vrstici.
+- Prazniki, ki so razvidni v programu so državni prazniki iz: https://www.gov.si/teme/drzavni-prazniki-in-dela-prosti-dnevi/.
 ---
 Za prikaz programa **Poženi ``Koledar.exe`` datoteko**
 ---
