@@ -147,7 +147,7 @@ namespace Koledar
 
                             string[] vrstice = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-                            foreach (string vrstica in vrstice.Skip(3).ToArray())
+                            foreach (string vrstica in vrstice.Skip(2).ToArray())
                             {
                                 string[] komponente = vrstica.Split(',');
                                 Praznik praznik = new Praznik(int.Parse(komponente[0]), komponente[1], komponente.Length > 2 ? int.Parse(komponente[2]) : 1, komponente.Length < 3);
